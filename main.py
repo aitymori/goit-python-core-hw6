@@ -42,12 +42,12 @@ def main():
         print("Шлях введений неправильно. Спробуйте ще раз")
 
     creation_folders(start_path)
-    recursive_finding(start_path, level=1)
-    unpack_archive(start_path)
+    recursive_finding(start_path, start_path, level=1)
+    unpack_archives(start_path)
     delete_empty_folders(start_path)
 
 
-def recursive_finding(path, level=1):
+def recursive_finding(path, start_path, level=1):
 
     """Рекурсивний прохід по папкам в пошуці файлів"""
     for i in os.listdir(path):
@@ -57,12 +57,12 @@ def recursive_finding(path, level=1):
             new_path = path / i
         
             if os.path.isdir(new_path):
-                recursive_finding(new_path,level+1)
+                recursive_finding(new_path, start_path, level+1)
 
             elif os.path.isfile(new_path):
                 file_extension_full = Path(new_path).suffix.upper()
                 file_extension = file_extension_full[1:]
-                sorting_files(file_extension, new_path, path)
+                sorting_files(file_extension, new_path, start_path)
             else:
                 print('ELSE')
         else:
