@@ -18,6 +18,3 @@ def normalize(path, moved_path):
     full_normalized_name = path_to_file.replace(Path(moved_path) / normalized_file_name) # перемістили файл в нове місце
     
     return full_normalized_name
-
-# path = 'D:\\user\\pathlib_learn\\test.txt'
-# start_path = 'D:\\user\\pathlib_learn'
