@@ -37,14 +37,14 @@ def main():
     start_path = None
     try:
         start_path = Path(sys.argv[1])
+        
     except IndexError:
         print("Шлях введений неправильно. Спробуйте ще раз")
-    
-    
+
     creation_folders(start_path)
-    recursive_finding(path=start_path, level=1)
-    # РОЗПАКОВКА АРХІВІВ ДОПИСАТИ
-    delete_empty_folders(path=start_path)
+    recursive_finding(start_path, level=1)
+    unpack_archive(start_path)
+    delete_empty_folders(start_path)
 
 
 def recursive_finding(path, level=1):
