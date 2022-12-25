@@ -1,7 +1,8 @@
 import os
 from normalize_script import normalize
 from pathlib import Path
-from shutil import rmtree
+from shutil import rmtree, unpack_archive
+import sys
 
 
 def creation_folders(path):
@@ -30,11 +31,25 @@ def delete_empty_folders(path):
         else:
             rmtree(new_path)
 
+def main():
+
+    """Старт програми"""
+    start_path = None
+    try:
+        start_path = Path(sys.argv[1])
+    except IndexError:
+        print("Шлях введений неправильно. Спробуйте ще раз")
+    
+    
+    creation_folders(start_path)
+    recursive_finding(path=start_path, level=1)
+    # РОЗПАКОВКА АРХІВІВ ДОПИСАТИ
+    delete_empty_folders(path=start_path)
+
 
 def recursive_finding(path, level=1):
 
     """Рекурсивний прохід по папкам в пошуці файлів"""
-
     for i in os.listdir(path):
     
         if i not in "images, video, documents, music, archives, unknown": # пропуск власноруч створених папок
@@ -47,7 +62,7 @@ def recursive_finding(path, level=1):
             elif os.path.isfile(new_path):
                 file_extension_full = Path(new_path).suffix.upper()
                 file_extension = file_extension_full[1:]
-                sorting_files(file_extension, new_path, start_path)
+                sorting_files(file_extension, new_path, path)
             else:
                 print('ELSE')
         else:
@@ -60,45 +75,60 @@ def sorting_files(extension, path, start_path):
     Виклик функції нормалізування (перейменовує файл й переміщує файл).
     Додавання нового путі в список в словнику."""
     
-    
     if extension in template_extensions["images"]:
-        moved_path = start_path + '\\' + "images" # створюємо путь для переміщення в нову папку     
-        new_moved_path = normalize(path, moved_path) # з путя бере імя і перейменовує. Переміщує файл
-        finded_extensions["images"].append(new_moved_path) # додаємо файл в нову папку
+        moved_path = start_path + '\\' + "images"     
+        new_moved_path = normalize(path, moved_path)
+        finded_extensions["images"].append(new_moved_path)
+
         if extension not in finded_extensions["known"]:
             finded_extensions["known"].append(extension)
+
     elif extension in template_extensions["video"]:
-        moved_path = start_path + '\\' + "video" # створюємо путь для переміщення в нову папку
-        new_moved_path = normalize(path, moved_path) # з путя бере імя і перейменовує. Переміщує файл
-        finded_extensions["video"].append(new_moved_path) # додаємо файл в нову папку
+        moved_path = start_path + '\\' + "video"
+        new_moved_path = normalize(path, moved_path)
+        finded_extensions["video"].append(new_moved_path)
+
         if extension not in finded_extensions["known"]:
             finded_extensions["known"].append(extension)
+
     elif extension in template_extensions["documents"]:
-        moved_path = start_path + '\\' + "documents" # створюємо путь для переміщення в нову папку
-        new_moved_path = normalize(path, moved_path) # з путя бере імя і перейменовує. Переміщує файл
-        finded_extensions["documents"].append(new_moved_path) # додаємо файл в нову папку
+        moved_path = start_path + '\\' + "documents"
+        new_moved_path = normalize(path, moved_path)
+        finded_extensions["documents"].append(new_moved_path)
+
         if extension not in finded_extensions["known"]:
             finded_extensions["known"].append(extension)
+
     elif extension in template_extensions["music"]:
-        moved_path = start_path + '\\' + "music" # створюємо путь для переміщення в нову папку
-        new_moved_path = normalize(path, moved_path) # з путя бере імя і перейменовує. Переміщує файл
-        finded_extensions["music"].append(new_moved_path) # додаємо файл в нову папку
+        moved_path = start_path + '\\' + "music"
+        new_moved_path = normalize(path, moved_path)
+        finded_extensions["music"].append(new_moved_path)
+
         if extension not in finded_extensions["known"]:
             finded_extensions["known"].append(extension)
+
     elif extension in template_extensions["archives"]:
-        moved_path = start_path + '\\' + "archives" # створюємо путь для переміщення в нову папку
-        new_moved_path = normalize(path, moved_path) # з путя бере імя і перейменовує. Переміщує файл
-        finded_extensions["archives"].append(new_moved_path) # додаємо файл в нову папку
+        moved_path = start_path + '\\' + "archives"
+        new_moved_path = normalize(path, moved_path)
+        finded_extensions["archives"].append(new_moved_path)
+
         if extension not in finded_extensions["known"]:
             finded_extensions["known"].append(extension)
+
     else:
-        moved_path = start_path + '\\' + "unknown" # створюємо путь для переміщення в нову папку
-        new_moved_path = normalize(path, moved_path) # з путя бере імя і перейменовує. Переміщує файл
+        moved_path = start_path + '\\' + "unknown"
+        new_moved_path = normalize(path, moved_path)
+
         if extension not in finded_extensions["unknown"]:
             finded_extensions["unknown"].append(extension)
 
-    return finded_extensions # словник усіх файлів
+    return finded_extensions # словник усіх знайдених файлів
 
+
+def unpack_archives(start_path):
+    path_folder = start_path / "archives"
+    for folder in path_folder.iterdir():
+        unpack_archive(folder, start_path / "archives" / folder.stem)
 
 # Оголошення базових розширень
 template_extensions = {
@@ -119,21 +149,5 @@ finded_extensions = {
     "unknown": []
 }
 
-
-# шлях до папки
-start_path = 'C:\\Users\\user\\shit_sorting'
-
-
-"""Старт програми!!"""
-creation_folders(start_path) # створюємо папки
-
-recursive_finding(path=start_path, level=1) # процес сортування
-
-# РОЗПАКОВКА АРХІВІВ ДОПИСАТИ
-
-delete_empty_folders(path=start_path) # видалення пустих папок
-
-
-"""Лишилося дописати:
-1. Розпаковка архівів
-2. Шлях до стартової папки брати від користувача з блоком try except якщо к-вач нічого не ввів"""
+if __name__ == "__main__":
+    main()
