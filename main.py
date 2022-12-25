@@ -10,7 +10,7 @@ def creation_folders(path):
     """Створення пустих папок для переміщень"""
 
     for key in template_extensions.keys():
-        folders_path = path + "\\" + key
+        folders_path = path / key
         Path(folders_path).mkdir(exist_ok=True)
 
 def delete_empty_folders(path):
@@ -18,7 +18,7 @@ def delete_empty_folders(path):
     """Видалення порожніх папок та папок в папках"""
 
     for f in os.listdir(path):
-        new_path = path+'\\'+f
+        new_path = path / f
 
         if os.path.isfile(new_path):
             continue
@@ -54,7 +54,7 @@ def recursive_finding(path, level=1):
     
         if i not in "images, video, documents, music, archives, unknown": # пропуск власноруч створених папок
             
-            new_path = path+'\\'+i
+            new_path = path / i
         
             if os.path.isdir(new_path):
                 recursive_finding(new_path,level+1)
@@ -76,7 +76,7 @@ def sorting_files(extension, path, start_path):
     Додавання нового путі в список в словнику."""
     
     if extension in template_extensions["images"]:
-        moved_path = start_path + '\\' + "images"     
+        moved_path = start_path / "images"     
         new_moved_path = normalize(path, moved_path)
         finded_extensions["images"].append(new_moved_path)
 
@@ -84,7 +84,7 @@ def sorting_files(extension, path, start_path):
             finded_extensions["known"].append(extension)
 
     elif extension in template_extensions["video"]:
-        moved_path = start_path + '\\' + "video"
+        moved_path = start_path / "video"
         new_moved_path = normalize(path, moved_path)
         finded_extensions["video"].append(new_moved_path)
 
@@ -92,7 +92,7 @@ def sorting_files(extension, path, start_path):
             finded_extensions["known"].append(extension)
 
     elif extension in template_extensions["documents"]:
-        moved_path = start_path + '\\' + "documents"
+        moved_path = start_path / "documents"
         new_moved_path = normalize(path, moved_path)
         finded_extensions["documents"].append(new_moved_path)
 
@@ -100,7 +100,7 @@ def sorting_files(extension, path, start_path):
             finded_extensions["known"].append(extension)
 
     elif extension in template_extensions["music"]:
-        moved_path = start_path + '\\' + "music"
+        moved_path = start_path / "music"
         new_moved_path = normalize(path, moved_path)
         finded_extensions["music"].append(new_moved_path)
 
@@ -108,7 +108,7 @@ def sorting_files(extension, path, start_path):
             finded_extensions["known"].append(extension)
 
     elif extension in template_extensions["archives"]:
-        moved_path = start_path + '\\' + "archives"
+        moved_path = start_path / "archives"
         new_moved_path = normalize(path, moved_path)
         finded_extensions["archives"].append(new_moved_path)
 
@@ -116,7 +116,7 @@ def sorting_files(extension, path, start_path):
             finded_extensions["known"].append(extension)
 
     else:
-        moved_path = start_path + '\\' + "unknown"
+        moved_path = start_path / "unknown"
         new_moved_path = normalize(path, moved_path)
 
         if extension not in finded_extensions["unknown"]:
